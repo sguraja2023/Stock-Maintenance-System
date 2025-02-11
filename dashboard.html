@@ -5,22 +5,95 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Stock Maintenance</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <header>
         <h1>Dashboard</h1>
         <nav>
-            <a href="billing-interface.html">Billing</a>
             <a href="stock-management.html">Stock Management</a>
+            <a href="billing-interface.html">Billing</a>
+            <a href="supplier-management.html">Suppliers</a>
             <a href="reports.html">Reports</a>
-            <a href="login.html" onclick="logout()">Logout</a>
+            <a href="login.html" onclick="handleLogout()">Logout</a>
         </nav>
     </header>
+
     <main>
+        <div class="admin-controls" style="margin: 20px; padding: 20px; background: #f5f5f5; border-radius: 8px;">
+            <h2>Data Management</h2>
+            <button onclick="initializeData()" class="btn-primary">Initialize Sample Data</button>
+            <button onclick="clearAllData()" class="btn-danger">Clear All Data</button>
+            <div id="data-status" style="margin-top: 10px;"></div>
+        </div>
+
         <h2>Stock Overview</h2>
         <p>Total Products: <span id="total-products">0</span></p>
         <p>Low Stock Alerts: <span id="low-stock">0</span></p>
     </main>
-    <script src="script.js"></script>
+
+    <script src="init-data.js"></script>
+    <script>
+        function initializeData() {
+            try {
+                const data = DataInitializer.initializeData();
+                const statusDiv = document.getElementById('data-status');
+                statusDiv.innerHTML = `
+                    <div style="color: green; margin-top: 10px;">
+                        Data initialized successfully!<br>
+                        - ${data.suppliers.length} suppliers<br>
+                        - ${data.stock.length} products<br>
+                        - ${data.sales.length} sales records<br>
+                        - ${data.purchaseOrders.length} purchase orders
+                    </div>
+                `;
+                setTimeout(() => location.reload(), 2000); // Reload after 2 seconds
+            } catch (error) {
+                document.getElementById('data-status').innerHTML = `
+                    <div style="color: red; margin-top: 10px;">
+                        Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        function clearAllData() {
+            try {
+                DataInitializer.clearData();
+                const statusDiv = document.getElementById('data-status');
+                statusDiv.innerHTML = `
+                    <div style="color: orange; margin-top: 10px;">
+                        All data cleared successfully!
+                    </div>
+                `;
+                setTimeout(() => location.reload(), 2000); // Reload after 2 seconds
+            } catch (error) {
+                document.getElementById('data-status').innerHTML = `
+                    <div style="color: red; margin-top: 10px;">
+                        Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Check if data exists on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const stock = JSON.parse(localStorage.getItem('stock')) || [];
+            const statusDiv = document.getElementById('data-status');
+            if (stock.length > 0) {
+                statusDiv.innerHTML = `
+                    <div style="color: blue; margin-top: 10px;">
+                        System contains data: ${stock.length} products in stock
+                    </div>
+                `;
+            } else {
+                statusDiv.innerHTML = `
+                    <div style="color: orange; margin-top: 10px;">
+                        No data found. Please initialize sample data.
+                    </div>
+                `;
+            }
+        });
+    </script>
 </body>
 </html>

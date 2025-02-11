@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reports</title>
+    <title>Reports & Analytics</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -24,42 +24,72 @@
     </script>
 
     <header>
-        <h1>Reports</h1>
+        <h1>Reports & Analytics</h1>
         <nav>
             <a href="dashboard.html">Dashboard</a>
             <a href="billing-interface.html">Billing</a>
-            <a href="stock-management.html">Stock Management</a>
+            <a href="stock-management.html">Stock</a>
+            <a href="supplier-management.html">Suppliers</a>
             <a href="login.html" onclick="handleLogout()">Logout</a>
         </nav>
     </header>
     <main>
-        <h2>Sales Report</h2>
-        <!-- Add debug section -->
-        <div class="debug-section">
-            <h3>Debug Information</h3>
-            <button onclick="addTestData()">Add Test Sales Data</button>
-            <button onclick="clearSalesData()">Clear Sales Data</button>
-            <pre id="debug-info"></pre>
-        </div>
-
-        <div id="no-data-message" style="display: none; text-align: center; padding: 20px;">
-            <p>No sales data available yet. Make some sales to see the analytics.</p>
-        </div>
-        <div id="chart-wrapper">
-            <div class="chart-container" style="position: relative; height:50vh; width:80vw; margin: auto;">
+        <!-- Sales Analytics -->
+        <div class="analytics-section">
+            <h2>Sales Analytics</h2>
+            <div class="chart-container">
                 <canvas id="salesChart"></canvas>
             </div>
-            <div class="table-container">
+            <div class="chart-container">
+                <canvas id="predictionChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Inventory Analytics -->
+        <div class="analytics-section">
+            <h2>Inventory Optimization</h2>
+            <div class="optimization-grid">
+                <div class="optimization-card">
+                    <h3>Stock Predictions</h3>
+                    <div id="stockPredictions"></div>
+                </div>
+                <div class="optimization-card">
+                    <h3>Reorder Points</h3>
+                    <div id="reorderPoints"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Price Analytics -->
+        <div class="analytics-section">
+            <h2>Price Optimization</h2>
+            <div class="price-analysis">
                 <table>
                     <thead>
                         <tr>
                             <th>Product</th>
-                            <th>Quantity Sold</th>
-                            <th>Total Revenue</th>
+                            <th>Current Price</th>
+                            <th>Suggested Price</th>
+                            <th>Confidence</th>
                         </tr>
                     </thead>
-                    <tbody id="reports-body"></tbody>
+                    <tbody id="priceAnalytics"></tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- Customer Behavior -->
+        <div class="analytics-section">
+            <h2>Customer Behavior Analysis</h2>
+            <div class="behavior-grid">
+                <div class="behavior-card">
+                    <h3>Peak Sales Times</h3>
+                    <canvas id="peakTimesChart"></canvas>
+                </div>
+                <div class="behavior-card">
+                    <h3>Customer Segments</h3>
+                    <canvas id="segmentsChart"></canvas>
+                </div>
             </div>
         </div>
     </main>
@@ -194,5 +224,6 @@
             });
         });
     </script>
+    <script src="reports.js"></script>
 </body>
 </html>

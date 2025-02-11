@@ -12,28 +12,55 @@
         <nav>
             <a href="dashboard.html">Dashboard</a>
             <a href="billing-interface.html">Billing</a>
+            <a href="supplier-management.html">Suppliers</a>
             <a href="reports.html">Reports</a>
-            <a href="login.html" onclick="logout()">Logout</a>
+            <a href="login.html" onclick="handleLogout()">Logout</a>
         </nav>
     </header>
     <main>
-        <h2>Manage Stock</h2>
-        <input type="text" id="product-name" placeholder="Product Name">
-        <input type="number" id="product-price" placeholder="Price">
-        <input type="number" id="product-stock" placeholder="Stock">
-        <button onclick="addProduct()">Add Product</button>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Stock</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="stock-body"></tbody>
-        </table>
+        <div class="stock-container">
+            <!-- Add Product Form -->
+            <div class="add-product-form">
+                <h2>Add New Product</h2>
+                <form id="addProductForm">
+                    <input type="text" id="product-name" placeholder="Product Name" required>
+                    <input type="number" id="product-price" placeholder="Price" required>
+                    <input type="number" id="product-stock" placeholder="Initial Stock" required>
+                    <input type="number" id="product-threshold" placeholder="Stock Threshold" required>
+                    <select id="product-supplier" required>
+                        <option value="">Select Supplier</option>
+                    </select>
+                    <button type="submit">Add Product</button>
+                </form>
+            </div>
+
+            <!-- Stock Table -->
+            <div class="stock-table">
+                <h2>Current Stock</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                            <th>Current Stock</th>
+                            <th>Threshold</th>
+                            <th>Status</th>
+                            <th>Supplier</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stock-body"></tbody>
+                </table>
+            </div>
+
+            <!-- Threshold Alerts -->
+            <div class="threshold-alerts">
+                <h2>Low Stock Alerts</h2>
+                <div id="alertsList"></div>
+            </div>
+        </div>
     </main>
-    <script src="script.js"></script>
+    <script src="analytics.js"></script>
+    <script src="stock-management.js"></script>
 </body>
 </html>
