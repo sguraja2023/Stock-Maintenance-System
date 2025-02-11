@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .debug-section {
+            margin: 20px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <!-- Check login status -->
+    <script>
+        if (localStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <header>
+        <h1>Reports</h1>
+        <nav>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="billing-interface.html">Billing</a>
+            <a href="stock-management.html">Stock Management</a>
+            <a href="login.html" onclick="handleLogout()">Logout</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Sales Report</h2>
+        <!-- Add debug section -->
+        <div class="debug-section">
+            <h3>Debug Information</h3>
+            <button onclick="addTestData()">Add Test Sales Data</button>
+            <button onclick="clearSalesData()">Clear Sales Data</button>
+            <pre id="debug-info"></pre>
+        </div>
+
+        <div id="no-data-message" style="display: none; text-align: center; padding: 20px;">
+            <p>No sales data available yet. Make some sales to see the analytics.</p>
+        </div>
+        <div id="chart-wrapper">
+            <div class="chart-container" style="position: relative; height:50vh; width:80vw; margin: auto;">
+                <canvas id="salesChart"></canvas>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity Sold</th>
+                            <th>Total Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reports-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    <script>
+        function handleLogout() {
+            localStorage.setItem('isLoggedIn', 'false');
+        }
+
+        function addTestData() {
+            const testSales = [
+                { product: "Laptop", quantity: 3, total: 3000 },
+                { product: "Phone", quantity: 5, total: 2500 },
+                { product: "Tablet", quantity: 2, total: 600 }
+            ];
+            localStorage.setItem("sales", JSON.stringify(testSales));
+            location.reload();
+        }
+
+        function clearSalesData() {
+            localStorage.removeItem("sales");
+            location.reload();
+        }
+
+        function updateDebugInfo() {
+            const debugInfo = document.getElementById("debug-info");
+            const sales = localStorage.getItem("sales");
+            debugInfo.textContent = `Current Sales Data in localStorage:\n${sales ? sales : 'No sales data found'}`;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            updateDebugInfo();
+            
+            // Get sales data from localStorage
+            const sales = JSON.parse(localStorage.getItem("sales")) || [];
+            const chartWrapper = document.getElementById("chart-wrapper");
+            const noDataMessage = document.getElementById("no-data-message");
+
+            console.log("Sales data:", sales); // Debug log
+
+            if (!sales || sales.length === 0) {
+                console.log("No sales data found"); // Debug log
+                chartWrapper.style.display = "none";
+                noDataMessage.style.display = "block";
+                return;
+            }
+
+            console.log("Processing sales data"); // Debug log
+            chartWrapper.style.display = "block";
+            noDataMessage.style.display = "none";
+            
+            // Process sales data
+            const productSales = {};
+            sales.forEach(sale => {
+                if (!productSales[sale.product]) {
+                    productSales[sale.product] = { quantity: 0, revenue: 0 };
+                }
+                productSales[sale.product].quantity += parseInt(sale.quantity);
+                productSales[sale.product].revenue += parseFloat(sale.total);
+            });
+
+            // Update table
+            const reportsBody = document.getElementById("reports-body");
+            reportsBody.innerHTML = ''; // Clear existing content
+            Object.entries(productSales).forEach(([product, data]) => {
+                reportsBody.innerHTML += `
+                    <tr>
+                        <td>${product}</td>
+                        <td>${data.quantity}</td>
+                        <td>$${data.revenue.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+
+            // Create chart
+            const ctx = document.getElementById("salesChart").getContext("2d");
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: Object.keys(productSales),
+                    datasets: [
+                        {
+                            label: "Quantity Sold",
+                            data: Object.values(productSales).map(data => data.quantity),
+                            backgroundColor: "rgba(75, 192, 192, 0.6)",
+                            borderColor: "rgba(75, 192, 192, 1)",
+                            borderWidth: 1,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: "Revenue ($)",
+                            data: Object.values(productSales).map(data => data.revenue),
+                            backgroundColor: "rgba(255, 99, 132, 0.6)",
+                            borderColor: "rgba(255, 99, 132, 1)",
+                            borderWidth: 1,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Quantity'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Revenue ($)'
+                            },
+                            grid: {
+                                drawOnChartArea: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Sales Analytics'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

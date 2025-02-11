@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing - Stock Maintenance</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Billing Interface</h1>
+        <nav>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="#">Stock Management</a>
+            <a href="#">Reports</a>
+            <a href="login.html" onclick="logout()">Logout</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Scan Product</h2>
+        <input type="text" id="barcode-input" placeholder="Scan barcode here...">
+        <button onclick="addToCart()">Add</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="cart-body"></tbody>
+        </table>
+        <p>Total Amount: $<span id="total-amount">0.00</span></p>
+        <button onclick="checkout()">Checkout</button>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
